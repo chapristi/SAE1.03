@@ -16,7 +16,7 @@ validate_date() {
 validate_alphabetic() {
     local input=$1
     if [[ ! $input =~ ^[a-zA-Z]+$ ]]; then
-        show_error "The input must contain only letters: $input"
+        show_error "Les champs nom et prenom ne doivent contenir que des lettres: $input"
         return 1
     fi
 }
@@ -25,7 +25,7 @@ validate_alphabetic() {
 validate_student_year() {
     local year=$1
     if [[ $annee -ne 1 && $annee -ne 2 && $annee -ne 3 ]]; then
-        show_error "The student year must be 1, 2, or 3: $year"
+        show_error "L'annee de l'etudiant peut etre 1, 2, ou 3: $year"
         return 1
     fi
 }
@@ -34,7 +34,7 @@ validate_student_year() {
 validate_phone_number() {
     local phone=$1
     if [[ ! $phone =~ ^0[67]([0-9]{8})$ ]]; then
-        show_error "Invalid phone number format: $phone"
+        show_error "Format du numero de telephone non correcte: $phone"
         return 1
     fi
 }
@@ -69,17 +69,17 @@ process_line() {
     
     if [ $err -ne 0 ]
     then
-        echo "Line $current_line is valid."
+        echo "La ligne $current_line est valide."
     fi
 }
 
 # Main script starts here
 
 if [ $# -ne 1 ]; then
-    show_error "You must enter exactly one argument."
+    show_error "Vous devez entrez un seul argument"
     exit 1
 elif [ ! -f "$1" ]; then
-    show_error "File not found: $1"
+    show_error "Le fichier n'a pas ete trouve: $1"
     exit 1
 fi
 
@@ -92,8 +92,9 @@ non_conforme=0
 
 
 # Loop through each line
-for ((current_line = 1; current_line <= $number_of_lines; current_line++)); do
-    echo "------------Line $current_line--------------"
+for ((current_line = 1; current_line <= $number_of_lines; current_line++))
+do
+    echo "------------Ligne $current_line--------------"
     current_line_content=$(getLineX "$current_line" "$file_content")
     process_line "$current_line_content" "$current_line"
 done
