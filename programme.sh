@@ -4,6 +4,10 @@ if [ $# -ne 1 ]
 then
     echo "Vous devez n'entrer qu'un et un seul argument"
     exit 1
+elif [ ! -f $1 ]
+then
+    echo "Le fichier n'a pas etait trouvé"
+    exit 1
 fi
 
 getLineX() {
@@ -14,10 +18,20 @@ getLineX() {
     echo $result
 }
 
+createLoginName() {
+    local nom=$1
+    local prenom=$2
+    #0:1 veut dire on part de l'index 0 et on prend 1 caractere
+    local result="${nom:0:1}-$nom"
+    echo $result
+}
+#createPassword(){}
+
 #verifier que le fichier n'est pas corrompu
 fichier=$(cat $1)
 #si on met pas les guillements sur fichier cela enleve les retours à la ligne donc mauvais resultat
 taille_fichier=$(echo "$fichier" | wc -l | cut -d ' ' -f 1 )
+non_conforme=0
 
 for (( i=1; i<=$taille_fichier; i++ ))
 do
@@ -33,26 +47,48 @@ do
         annee=$(echo "$line" | cut -d ":" -f 3)
         telephone=$(echo "$line" | cut -d ":" -f 4)
         annee_naissance=$(echo "$line" | cut -d ":" -f 5)
+        erreur=0
         if [[ ! $prenom =~ ^[a-zA-Z]+$ ]]
         then
             echo "La partie du prenom ne doit contenir que des lettres"
+            erreur=1
         fi
         if [[ ! $nom =~ ^[a-zA-Z]+$ ]]
         then
             echo "La partie du nom ne doit contenir que des lettres"
+            erreur=1
         fi
         if [[ $annee -ne 1 && $annee -ne 2 && $annee -ne 3 ]]
         then
             echo "L'année de l'eleve doit etre 1 2 ou 3"
+            erreur=1
+
         fi
         if [[  ! $telephone =~ ^0[67]([0-9]{8})$ ]]
         then
             echo "Le numero de telephone de l'etudiant doit etre conforme"
+            erreur=1
         fi
         annee_est_valide=$(date -d "$annee_naissance" >/dev/null 2>&1)
         if [[ $? -ne 0 ]]
         then
             echo "La date de naissance doit etre valide"
+            erreur=1
+        fi
+        if [[ $erreur -eq 0 ]]
+        then
+            echo "Rien à signaler pour cette ligne"
+        else
+            non_conforme=1
         fi
     fi
 done
+
+if [ $non_conforme -eq 1 ]
+then
+    echo "Le fichier n'est pas conforme"
+    exit 1
+else
+    echo "Le fichier est conforme"
+fi
+
