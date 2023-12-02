@@ -41,6 +41,8 @@ do
     if [ $nombre_elements -ne 5 ]
     then
         echo "Nombre d'elements insuffisant, il n'y a que seulement $nombre_elements elements distinctifs"
+        non_conforme=1
+
     else
         prenom=$(echo "$line" | cut -d ":" -f 1)
         nom=$(echo "$line" | cut -d ":" -f 2)
