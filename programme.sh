@@ -26,12 +26,12 @@ createLoginName() {
     echo $result
 }
 #createPassword(){}
-
-#verifier que le fichier n'est pas corrompu
-fichier=$(cat $1)
+#on recupere le fichier et on supprimme tout les espaces
+fichier=$(cat $1 | tr -d " ")
 #si on met pas les guillements sur fichier cela enleve les retours à la ligne donc mauvais resultat
 taille_fichier=$(echo "$fichier" | wc -l | cut -d ' ' -f 1 )
 non_conforme=0
+#verifier que le fichier n'est pas corrompu
 
 for (( i=1; i<=$taille_fichier; i++ ))
 do
@@ -69,7 +69,8 @@ do
             echo "Le numero de telephone de l'etudiant doit etre conforme"
             erreur=1
         fi
-        annee_est_valide=$(date -d "$annee_naissance" >/dev/null 2>&1)
+        echo ${annee_naissance:6:4}
+        annee_est_valide=$(date -d "${annee_naissance:3:2}/${annee_naissance:0:2}/${annee_naissance:6:4}" >/dev/null 2>&1)
         if [[ $? -ne 0 ]]
         then
             echo "La date de naissance doit etre valide"
