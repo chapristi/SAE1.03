@@ -20,7 +20,8 @@ validate_date() {
 
 validate_alphabetic() {
     local input=$1
-    if [[ ! $input =~ ^[a-zA-Z]+$ ]]; then
+    if [[ ! $input =~ ^[a-zA-Z]+$ ]]
+    then
         show_error "Les champs nom et prenom ne doivent contenir que des lettres: $input"
         return 1
     fi
@@ -28,7 +29,8 @@ validate_alphabetic() {
 
 validate_student_year() {
     local year=$1
-    if [[ $year -ne 1 && $year -ne 2 && $year -ne 3 ]]; then
+    if [[ $year -ne 1 && $year -ne 2 && $year -ne 3 ]]
+    then
         show_error "L'annee de l'etudiant peut etre 1, 2, ou 3: $year"
         return 1
     fi
@@ -36,7 +38,8 @@ validate_student_year() {
 
 validate_phone_number() {
     local phone=$1
-    if [[ ! $phone =~ ^0[67]([0-9]{8})$ ]]; then
+    if [[ ! $phone =~ ^0[67]([0-9]{8})$ ]]
+    then
         show_error "Format du numero de telephone non correcte: $phone"
         return 1
     fi
