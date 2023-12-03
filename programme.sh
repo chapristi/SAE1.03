@@ -1,4 +1,12 @@
 #!/bin/bash
+createLoginName() {
+    local nom=$1
+    local prenom=$2
+    #0:1 veut dire on part de l'index 0 et on prend 1 caractere
+    local result="${prenom:0:1}-$nom"
+    echo $result
+}
+#createUserPassword(){}
 
 show_error() {
     echo "Error: $1"
@@ -33,6 +41,7 @@ validate_phone_number() {
         return 1
     fi
 }
+#cette fonction petmet de recuperer la ligne que l'on veut dans un fichier
 getLineX() {
     local line=$1
     local file=$2
@@ -66,23 +75,25 @@ process_line() {
     fi
 }
 
-
-if [ $# -ne 1 ]; then
+if [ $# -ne 1 ]
+then
     show_error "Vous devez entrez un seul argument"
     exit 1
-elif [ ! -f "$1" ]; then
+#on verifie que le fichier existe
+elif [ ! -f "$1" ] 
+then
     show_error "Le fichier n'a pas ete trouve: $1"
     exit 1
 fi
 
 #on supprimme les espaces
 file_content=$(cat "$1" | tr -d " ")
-
+#on compte le nombre de ligne pour savoir combiend e fois on va devoir boucler
 number_of_lines=$(echo "$file_content" | wc -l | cut -d ' ' -f 1 )
 echo $number_of_lines
 non_conforme=0
 
-
+#verification sur toute les lignes du fichier
 for ((current_line = 1; current_line <= $number_of_lines; current_line++))
 do
     echo "------------Ligne $current_line--------------"
@@ -97,4 +108,8 @@ then
 else
     echo "Le fichier est conforme"
 fi
+
+
+
+
 
