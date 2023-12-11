@@ -1,4 +1,5 @@
 #!/bin/bash
+
 createLoginName() {
     local nom=$1
     local prenom=$2
@@ -14,8 +15,15 @@ show_error() {
 
 validate_date() {
     local date_str=$1
-    date -d "$date_str" >>/dev/null 2>&1
-    return $?
+    echo $date_str
+    date -d "$date_str" >/dev/null 2>&1
+    if [ $? -eq 1 ]
+    then
+        show_error "Le champ de la date doit etre valide: $date_str"
+        return 1
+    fi
+    return 0
+ 
 }
 
 validate_alphabetic() {
@@ -44,14 +52,7 @@ validate_phone_number() {
         return 1
     fi
 }
-#cette fonction petmet de recuperer la ligne que l'on veut dans un fichier
-getLineX() {
-    local line=$1
-    local file=$2
 
-    local result=$(echo "$file" | head -n $line | tail -n 1)
-    echo $result
-}
 
 process_line() {
     local line=$1
@@ -95,12 +96,12 @@ file_content=$(cat "$1" | tr -d " ")
 number_of_lines=$(echo "$file_content" | wc -l | cut -d ' ' -f 1 )
 echo $number_of_lines
 non_conforme=0
-
+current_line=0
 #verification sur toute les lignes du fichier
-for ((current_line = 1; current_line <= $number_of_lines; current_line++))
+for current_line_content in  $file_content
 do
+    ((current_line=$current_line+1)) 
     echo "------------Ligne $current_line--------------"
-    current_line_content=$(getLineX "$current_line" "$file_content")
     process_line "$current_line_content" "$current_line"
 done
 
