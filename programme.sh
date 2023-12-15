@@ -18,38 +18,29 @@ validate_date() {
     date -d "$date_str" >/dev/null 2>&1
     if [ $? -eq 1 ]
     then
-        show_error "Le champ de la date doit etre valide: $date_str"
         return 1
     fi
     return 0
- 
 }
-
-validate_alphabetic() {
+validate_regex(){
     local input=$1
-    if [[ ! $input =~ ^[A-Z][a-zA-Z]+$ ]]
+    local regex=$2
+
+    if [[ ! $input =~ $regex ]]
     then
-        show_error "Les champs nom et prenom ne doivent contenir que des lettres et commencer par une majuscule: $input"
         return 1
     fi
+    return 0
 }
+
 
 validate_student_year() {
     local year=$1
     if [[ $year -ne 1 && $year -ne 2 && $year -ne 3 ]]
     then
-        show_error "L'annee de l'etudiant peut etre 1, 2, ou 3: $year"
         return 1
     fi
-}
-
-validate_phone_number() {
-    local phone=$1
-    if [[ ! $phone =~ ^0[67]([0-9]{8})$ ]]
-    then
-        show_error "Format du numero de telephone non correcte: $phone"
-        return 1
-    fi
+    return 0
 }
 
 
@@ -67,12 +58,15 @@ process_line() {
     local mois_naissance=$(echo $annee_naissance | cut -d "/" -f 2 )
     local annee_naissance=$(echo $annee_naissance | cut -d "/" -f 3)
 
-    validate_alphabetic "$prenom" || err=1
-    validate_alphabetic "$nom" || err=1
-    validate_student_year "$annee" || err=1
-    validate_phone_number "$telephone" || err=1
+    validate_regex "$prenom" "^[A-Z][a-zA-Z]+$" || (err=1;show_error "Le champ prenom ne doit contenir que des lettres et commencer par une majuscule: $prenom")
+
+    validate_regex "$nom" "^[A-Z][a-zA-Z]+$" || (err=1;show_error "Le champ prenom ne doit contenir que des lettres et commencer par une majuscule: $nom")
+
+    validate_student_year "$annee" || (err=1;show_error "L'annee de l'etudiant peut etre 1, 2, ou 3: $year")
+
+    validate_regex "$telephone" "^0[67]([0-9]{8})$" ||( err=1;show_error "Le champ téléphone doit etre correcte: $telephone")
     #date utilise un format de date different du notre donc on le change
-    validate_date "$mois_naissance/$jour_naissance/$annee_naissance" || err=1
+    validate_date "$mois_naissance/$jour_naissance/$annee_naissance" || (err=1; show_error "Le champ de la date doit etre valide: $date_str")
     
     if [ $err -eq 0 ]
     then
