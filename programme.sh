@@ -27,9 +27,9 @@ validate_date() {
 
 validate_alphabetic() {
     local input=$1
-    if [[ ! $input =~ ^[a-zA-Z]+$ ]]
+    if [[ ! $input =~ ^[A-Z][a-zA-Z]+$ ]]
     then
-        show_error "Les champs nom et prenom ne doivent contenir que des lettres: $input"
+        show_error "Les champs nom et prenom ne doivent contenir que des lettres et commencer par une majuscule: $input"
         return 1
     fi
 }
