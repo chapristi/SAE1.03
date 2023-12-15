@@ -67,16 +67,19 @@ process_line() {
     local mois_naissance=$(echo $annee_naissance | cut -d "/" -f 2 )
     local annee_naissance=$(echo $annee_naissance | cut -d "/" -f 3)
 
-    validate_alphabetic "$prenom" || non_conforme=1;err=1
-    validate_alphabetic "$nom" || non_conforme=1;err=1
-    validate_student_year "$annee" || non_conforme=1;err=1
-    validate_phone_number "$telephone" || non_conforme=1;err=1
+    validate_alphabetic "$prenom" || err=1
+    validate_alphabetic "$nom" || err=1
+    validate_student_year "$annee" || err=1
+    validate_phone_number "$telephone" || err=1
     #date utilise un format de date different du notre donc on le change
-    validate_date "$mois_naissance/$jour_naissance/$annee_naissance" || non_conforme=1;err=1
+    validate_date "$mois_naissance/$jour_naissance/$annee_naissance" || err=1
     
-    if [ $err -ne 0 ]
+    if [ $err -eq 0 ]
     then
         echo "La ligne $current_line est valide."
+        return 0
+    else
+        return 1
     fi
 }
 
@@ -98,9 +101,13 @@ current_line=0
 #verification sur toute les lignes du fichier
 for current_line_content in  $file_content
 do
-    (($current_line++)) 
+    ((current_line=$current_line+1)) 
     echo "------------Ligne $current_line--------------"
     process_line "$current_line_content" "$current_line"
+    if [ $? -ne 0 ]
+    then
+        non_conforme=1
+    fi 
 done
 
 if [ $non_conforme -eq 1 ]
