@@ -15,7 +15,6 @@ show_error() {
 
 validate_date() {
     local date_str=$1
-    echo $date_str
     date -d "$date_str" >/dev/null 2>&1
     if [ $? -eq 1 ]
     then
@@ -64,14 +63,16 @@ process_line() {
     local annee=$(echo "$line" | cut -d ":" -f 3)
     local telephone=$(echo "$line" | cut -d ":" -f 4)
     local annee_naissance=$(echo "$line" | cut -d ":" -f 5)
-
+    local jour_naissance=$(echo $annee_naissance | cut -d "/" -f 1)
+    local mois_naissance=$(echo $annee_naissance | cut -d "/" -f 2 )
+    local annee_naissance=$(echo $annee_naissance | cut -d "/" -f 3)
 
     validate_alphabetic "$prenom" || non_conforme=1;err=1
     validate_alphabetic "$nom" || non_conforme=1;err=1
     validate_student_year "$annee" || non_conforme=1;err=1
     validate_phone_number "$telephone" || non_conforme=1;err=1
     #date utilise un format de date different du notre donc on le change
-    validate_date "${annee_naissance:3:2}/${annee_naissance:0:2}/${annee_naissance:6:4}" || non_conforme=1;err=1
+    validate_date "$mois_naissance/$jour_naissance/$annee_naissance" || non_conforme=1;err=1
     
     if [ $err -ne 0 ]
     then
@@ -84,7 +85,7 @@ then
     show_error "Vous devez entrez un seul argument"
     exit 1
 #on verifie que le fichier existe
-elif [ ! -f "$1" ] 
+elif [ ! -f $1 ] 
 then
     show_error "Le fichier n'a pas ete trouve: $1"
     exit 1
@@ -92,15 +93,12 @@ fi
 
 #on supprimme les espaces
 file_content=$(cat "$1" | tr -d " ")
-#on compte le nombre de ligne pour savoir combiend e fois on va devoir boucler
-number_of_lines=$(echo "$file_content" | wc -l | cut -d ' ' -f 1 )
-echo $number_of_lines
 non_conforme=0
 current_line=0
 #verification sur toute les lignes du fichier
 for current_line_content in  $file_content
 do
-    ((current_line=$current_line+1)) 
+    (($current_line++)) 
     echo "------------Ligne $current_line--------------"
     process_line "$current_line_content" "$current_line"
 done
@@ -109,8 +107,6 @@ if [ $non_conforme -eq 1 ]
 then
     echo "Le fichier n'est pas conforme"
     exit 1
-else
-    echo "Le fichier est conforme"
 fi
 
 
