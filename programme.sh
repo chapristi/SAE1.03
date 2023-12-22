@@ -101,11 +101,9 @@ if [ $non_conforme -eq 1 ]
 then
 	echo "Le fichier n'est pas conforme"
 	exit 3
-else
-	echo "le fichier est conforme"
 fi
 
-
+echo "le fichier est conforme"
 umask 077
 
 for ligne in $file_content
