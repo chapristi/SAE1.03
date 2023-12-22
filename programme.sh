@@ -78,7 +78,7 @@ then
 elif [ ! -f $1 ] || [ ! -r $1 ]
 then
     show_error "Le fichier : $1 n'a pas ete trouve ou est illisible" 
-    exit 1
+    exit 2
 fi
 
 #on supprimme les espaces
@@ -99,8 +99,8 @@ done
 
 if [ $non_conforme -eq 1 ]
 then
-    echo "Le fichier n'est pas conforme"
-    exit 1
+	echo "Le fichier n'est pas conforme"
+	exit 3
 else
 	echo "le fichier est conforme"
 fi
@@ -110,40 +110,40 @@ umask 077
 
 for ligne in $file_content
 do
-		nomFamille=$(echo $ligne | cut -d ':' -f1)
-		prenom=$(echo $ligne | cut -d ':' -f2)
-		annee=$(echo $ligne | cut -d ':' -f3)
-		numeroTelephone=$(echo $ligne | cut -d ':' -f4)
-		date_de_naissance=$(echo $ligne |cut -d ':' -f5)
+	nomFamille=$(echo $ligne | cut -d ':' -f1)
+	prenom=$(echo $ligne | cut -d ':' -f2)
+	annee=$(echo $ligne | cut -d ':' -f3)
+	numeroTelephone=$(echo $ligne | cut -d ':' -f4)
+	date_de_naissance=$(echo $ligne |cut -d ':' -f5)
 		
 
-		jour_de_naissance=$(echo $date_de_naissance |cut -d '/' -f1)
+	jour_de_naissance=$(echo $date_de_naissance |cut -d '/' -f1)
         mois_de_naissance=$(echo $date_de_naissance |cut -d '/' -f2)
         annee_de_naissance=$(echo $date_de_naissance |cut -d '/' -f3)
-		nom_utilisateur="${prenom:0:1}_$nomFamille"
+	nom_utilisateur="${prenom:0:1}_$nomFamille"
         
-		# MOT DE PASSE
+	# MOT DE PASSE
        
-		mois_en_lettre=$(date -d "$mois_de_naissance" +"%B")
+	mois_en_lettre=$(date -d "$mois_de_naissance" +"%B")
    
-		lettre_du_nomFamille=$(echo $nomFamille| fold -w1 | shuf -n1 | tr "[a-z]" "[A-Z]")
+	lettre_du_nomFamille=$(echo $nomFamille| fold -w1 | shuf -n1 | tr "[a-z]" "[A-Z]")
         
-		lettre_du_prenom=$(echo $nomFamille | fold -w1 | shuf -n1 | tr "[A-Z]" "[a-z]")
-		chiffre_numeroTelephone=${numeroTelephone:2:1}
-		caractere_special=$(echo "&$%*:@;.,?#!|[]{}()_+*/-=" | fold -w1 | shuf -n1)
-		lettre_du_mois=${mois_en_lettre:0:1}
-		mdp="$lettre_du_nomFamille$lettre_du_prenom$chiffre_numeroTelephone$caractere_special$lettre_du_mois"
+	lettre_du_prenom=$(echo $nomFamille | fold -w1 | shuf -n1 | tr "[A-Z]" "[a-z]")
+	chiffre_numeroTelephone=${numeroTelephone:2:1}
+	caractere_special=$(echo "&$%*:@;.,?#!|[]{}()_+*/-=" | fold -w1 | shuf -n1)
+	lettre_du_mois=${mois_en_lettre:0:1}
+	mdp="$lettre_du_nomFamille$lettre_du_prenom$chiffre_numeroTelephone$caractere_special$lettre_du_mois"
 
         if [ ! id "$nom_utilisateur" >/dev/null 2>&1 ]
         then 
-            sudo useradd -g annee$annee -m -d "/home/$nom_utilisateur" -s /bin/bash $nom_utilisateur
-		    sudo mkdir -p /home/$nom_utilisateur/.vscode/
-            sudo cp -r $HOME/.vscode/extensions/ /home/$nom_utilisateur/.vscode/extensions
-            sudo chown -R "$nom_utilisateur:annee$annee" /home/$nom_utilisateur/.vscode
+		sudo useradd -g annee$annee -m -d "/home/$nom_utilisateur" -s /bin/bash $nom_utilisateur
+		sudo mkdir -p /home/$nom_utilisateur/.vscode/
+            	sudo cp -r $HOME/.vscode/extensions/ /home/$nom_utilisateur/.vscode/extensions
+            	sudo chown -R "$nom_utilisateur:annee$annee" /home/$nom_utilisateur/.vscode
 	    	sudo echo "$nom_utilisateur:$mdp" >> passwords.txt
-		    contenu_fichier="$nomFamille:$prenom:$nom_utilisateur:$mdp"
-            sudo echo $contenu_fichier >> "annee$annee"
-            echo "L'utilisateur $nom_utilisateur a bien ete cree avec succes"
+	    	contenu_fichier="$nomFamille:$prenom:$nom_utilisateur:$mdp"
+            	sudo echo $contenu_fichier >> "annee$annee"
+            	echo "L'utilisateur $nom_utilisateur a bien ete cree avec succes"
         else
             echo "L'utilisateur $nom_utilisateur existe deja"
         fi
