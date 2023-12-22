@@ -51,8 +51,8 @@ process_line() {
     local mois_naissance=$(echo $date_naissance | cut -d "/" -f 2 )
     local annee_naissance=$(echo $date_naissance | cut -d "/" -f 3)
 
-    validate_regex "$prenom" "^[A-Z][a-z]+(-[a-z]+)?$"|| { err=1 ; show_error "Le champ prenom ne doit contenir que des lettres et commencer par une majuscule: $prenom"; }
-    validate_regex "$nom" "^[A-Z][a-z]+(-[a-z]+)?$" || { err=1 ; show_error "Le champ nom ne doit contenir que des lettres et commencer par une majuscule: $nom"; }
+    validate_regex "$prenom" "^[A-Z][a-z]+(-[a-z]+)?$"|| { err=1 ; show_error "Le champ prenom ne doit contenir que des lettres, un seul tiret si necessaire et commencer par une majuscule: $prenom"; }
+    validate_regex "$nom" "^[A-Z][a-z]+(-[a-z]+)?$" || { err=1 ; show_error "Le champ nom ne doit contenir que des lettres, un seul tiret si necessaire  et commencer par une majuscule: $nom"; }
 
     validate_student_year "$annee" || { err=1   ; show_error "L'annee de l'etudiant doit etre 1, 2, ou 3: $year"; }
 
