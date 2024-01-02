@@ -105,6 +105,7 @@ fi
 
 echo "le fichier est conforme"
 umask 077
+rm passwords.txt > /dev/null 2>&1
 
 for ligne in $file_content
 do
