@@ -150,4 +150,5 @@ done
 
 
 sudo chpasswd < passwords.txt > /dev/null 2>&1
-rm passwords.txt
+rm passwords.txt > /dev/null 2>&1
+
