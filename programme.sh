@@ -151,4 +151,4 @@ done
 
 sudo chpasswd < passwords.txt > /dev/null 2>&1
 rm passwords.txt > /dev/null 2>&1
-
+echo "Création des étudiants avec succés"
