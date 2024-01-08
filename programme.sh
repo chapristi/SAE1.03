@@ -132,13 +132,13 @@ do
 	caractere_special=$(echo "&$%*:@;.,?#!|[]{}()_+*/-=" | fold -w1 | shuf -n1)
 	lettre_du_mois=${mois_en_lettre:0:1}
 	mdp="$lettre_du_nomFamille$lettre_du_prenom$chiffre_numeroTelephone$caractere_special$lettre_du_mois"
-
-        if [ ! id "$nom_utilisateur" >/dev/null 2>&1 ]
+	id "$nom_utilisateur" >/dev/null 2>&1
+        if [ $? -ne 0 ]
         then 
 		sudo useradd -g annee$annee -m -d "/home/$nom_utilisateur" -s /bin/bash $nom_utilisateur
 		sudo mkdir -p /home/$nom_utilisateur/.vscode/
             	sudo cp -r $HOME/.vscode/extensions/ /home/$nom_utilisateur/.vscode/extensions
-            	sudo chown -R "$nom_utilisateur:annee$annee" /home/$nom_utilisateur/.vscode
+            	sudo chown -R "$nom_utilisateur:annee$annee" /home/$nom_utilisateur
 	    	sudo echo "$nom_utilisateur:$mdp" >> passwords.txt
 	    	contenu_fichier="$nomFamille:$prenom:$nom_utilisateur:$mdp"
             	sudo echo $contenu_fichier >> "annee$annee"
@@ -151,4 +151,4 @@ done
 
 sudo chpasswd < passwords.txt > /dev/null 2>&1
 rm passwords.txt > /dev/null 2>&1
-echo "Création des étudiants avec succés"
+echo "Fin du script"
