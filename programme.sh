@@ -74,7 +74,7 @@ if [ $# -ne 1 ]
 then
     show_error "Vous devez entrez un seul argument"
     exit 1
-#on verifie que le fichier existe
+#on verifie que le fichier existe et qu'il est lisible
 elif [ ! -f $1 ] || [ ! -r $1 ]
 then
     show_error "Le fichier : $1 n'a pas ete trouve ou est illisible" 
@@ -148,8 +148,9 @@ do
     fi
 done
 
-
+# on met les mots de passes à tout les utilisateurs
 sudo chpasswd 2> /dev/null < passwords.txt 
+#on supprime le fichier temporaire
 rm passwords.txt > /dev/null 2>&1
 
 echo "Fin du script"
