@@ -127,7 +127,7 @@ do
    
 	lettre_du_nomFamille=$(echo $nomFamille| fold -w1 | shuf -n1 | tr "[a-z]" "[A-Z]")
         
-	lettre_du_prenom=$(echo $nomFamille | fold -w1 | shuf -n1 | tr "[A-Z]" "[a-z]")
+	lettre_du_prenom=$(echo $prenom | fold -w1 | shuf -n1 | tr "[A-Z]" "[a-z]")
 	chiffre_numeroTelephone=${numeroTelephone:2:1}
 	caractere_special=$(echo "&$%*:@;.,?#!|[]{}()_+*/-=" | fold -w1 | shuf -n1)
 	lettre_du_mois=${mois_en_lettre:0:1}
