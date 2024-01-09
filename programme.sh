@@ -60,7 +60,7 @@ process_line() {
     #date utilise un format de date different du notre donc on le change
     validate_date "$mois_naissance/$jour_naissance/$annee_naissance" ||   { err=1   ; show_error "Le champ de la date doit etre valide: $date_naissance"; }
     
-    echo $err
+ 
     if [ $err -eq 0 ]
     then
         echo "La ligne $current_line est valide."
@@ -117,8 +117,8 @@ do
 		
 
 	jour_de_naissance=$(echo $date_de_naissance |cut -d '/' -f1)
-        mois_de_naissance=$(echo $date_de_naissance |cut -d '/' -f2)
-        annee_de_naissance=$(echo $date_de_naissance |cut -d '/' -f3)
+    mois_de_naissance=$(echo $date_de_naissance |cut -d '/' -f2)
+    annee_de_naissance=$(echo $date_de_naissance |cut -d '/' -f3)
 	nom_utilisateur="${prenom:0:1}_$nomFamille"
         
 	# MOT DE PASSE
@@ -133,22 +133,23 @@ do
 	lettre_du_mois=${mois_en_lettre:0:1}
 	mdp="$lettre_du_nomFamille$lettre_du_prenom$chiffre_numeroTelephone$caractere_special$lettre_du_mois"
 	id "$nom_utilisateur" >/dev/null 2>&1
-        if [ $? -ne 0 ]
-        then 
+    if [ $? -ne 0 ]
+    then 
 		sudo useradd -g annee$annee -m -d "/home/$nom_utilisateur" -s /bin/bash $nom_utilisateur
 		sudo mkdir -p /home/$nom_utilisateur/.vscode/
-            	sudo cp -r $HOME/.vscode/extensions/ /home/$nom_utilisateur/.vscode/extensions
-            	sudo chown -R "$nom_utilisateur:annee$annee" /home/$nom_utilisateur
-	    	sudo echo "$nom_utilisateur:$mdp" >> passwords.txt
-	    	contenu_fichier="$nomFamille:$prenom:$nom_utilisateur:$mdp"
-            	sudo echo $contenu_fichier >> "annee$annee"
-            	echo "L'utilisateur $nom_utilisateur a bien ete cree avec succes"
-        else
-            echo "L'utilisateur $nom_utilisateur existe deja"
-        fi
+        sudo cp -r $HOME/.vscode/extensions/ /home/$nom_utilisateur/.vscode/extensions
+        sudo chown -R "$nom_utilisateur:annee$annee" /home/$nom_utilisateur
+	    sudo echo "$nom_utilisateur:$mdp" >> passwords.txt
+	    contenu_fichier="$nomFamille:$prenom:$nom_utilisateur:$mdp"
+        sudo echo $contenu_fichier >> "annee$annee"
+        echo "L'utilisateur $nom_utilisateur a bien ete cree avec succes"
+    else
+        echo "L'utilisateur $nom_utilisateur existe deja"
+    fi
 done
 
 
-sudo chpasswd < passwords.txt > /dev/null 2>&1
+sudo chpasswd 2> /dev/null < passwords.txt 
 rm passwords.txt > /dev/null 2>&1
+
 echo "Fin du script"
